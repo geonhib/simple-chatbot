@@ -6,6 +6,7 @@
 ### activate venv
 ### pip install ntlk, numpy, tflearn
 ### pip install tensorflow
+### pip install Flask
 ### python train.py
-### python app.py
+### python ai.py
 
