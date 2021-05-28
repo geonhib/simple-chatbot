@@ -8,6 +8,9 @@ import tensorflow
 import random
 import json
 import pickle
+from flask import Flask, render_template, request, jsonify
+import datetime
+
 
 with open("intents.json") as file:
     data = json.load(file)
@@ -129,6 +132,40 @@ def chat():
             if tg['tag'] == tag:
                 responses = tg['responses']
         print("\n")
-        print(random.choice(responses))
+        reply = random.choice(responses)
+        print(reply)
+        return reply
+        
 
-chat()    
+
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+	return render_template('index.html')
+
+@app.route('/get')
+def get_bot_response():
+	global seat_count
+	message = request.args.get('msg')
+	if message:
+		message = message.lower()
+		results = model.predict([bag_of_words(message,words)])[0]
+		result_index = np.argmax(results)
+		tag = labels[result_index]
+		if results[result_index] > 0.5:
+	
+            for tg in data['intents']:
+                if tg['tag'] == tag:
+                    responses = tg['responses']
+            response = random.choice(responses)
+		else:
+			response = "I didn't quite get that, please try again."
+		return str(response)
+	return "Missing Data!"
+
+	
+if __name__ == "__main__":
+	app.run()
+
