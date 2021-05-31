@@ -61,6 +61,10 @@ body {
     padding: 10px;
     border-radius: 5px;
   }
+  .botText a{
+    color: white;
+  }
+
   .boxed {
     margin-left: auto;
     margin-right: auto;

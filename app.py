@@ -10,6 +10,7 @@ import json
 import pickle
 from flask import Flask, render_template, request, jsonify
 import datetime
+from googlesearch import search
 
 
 with open("intents.json") as file:
@@ -104,70 +105,37 @@ def bag_of_words(s, words):
     return np.array(bag)
 
 
-def chat():
-    print("Start talking with the bot (type quit to stop)!")
-    while True:
-        inp = input("You: ")
-        if inp.lower() == "quit":
-            break
-
-        results = model.predict([bag_of_words(inp, words)])
-        results_index = numpy.argmax(results)
-        tag = labels[results_index]
-        # print(results)
-
-        # try:
-        #     if results[results_index] > 0.6:
-        #         for tg in data["intents"]:
-        #             if tg['tag'] == tag:
-        #                 responses = tg['responses']
-        #         print(random.choice(responses))
-        #     else:
-        #         print("I did not understand, please re-phrase")  
-        # except:
-        #     print("I did not understand, please try again")  
-
-
-        for tg in data["intents"]:
-            if tg['tag'] == tag:
-                responses = tg['responses']
-        print("\n")
-        reply = random.choice(responses)
-        print(reply)
-        return reply
-        
-
-
-
-
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+    return render_template('index.html')
 
 @app.route('/get')
 def get_bot_response():
-	global seat_count
-	message = request.args.get('msg')
-	if message:
-		message = message.lower()
-		results = model.predict([bag_of_words(message,words)])[0]
-		result_index = np.argmax(results)
-		tag = labels[result_index]
-		if results[result_index] > 0.6:
-			if tag == "about":
-				response = "Firefly is an AI conversational chatbot application built in python and tensoflow by group * "
-			else:
-				for tg in data['intents']:
-					if tg['tag'] == tag:
-						responses = tg['responses']
-				response = random.choice(responses)
-		else:
-			response = "I didn't get you, please re-phrase."
-		return str(response)
-	return "Missing Data!"
+    message = request.args.get('msg')
+    if message:
+        message = message.lower()
+        results = model.predict([bag_of_words(message,words)])[0]
+        result_index = np.argmax(results)
+        tag = labels[result_index]
+        if results[result_index] > 0.6:
+            if tag == "about":
+                response = "Firefly is an AI conversational chatbot application built in python and tensoflow by group * "
+            else:
+                for tg in data['intents']:
+                    if tg['tag'] == tag:
+                        responses = tg['responses']
+                response = random.choice(responses)
+        else:
+            # Response has low probability
+            print(search(message, num_results=10))
+            for i in search(message, num_results=10):
+                print(i)
+                response = i
+        return str(response)
+    return "Please say something!"
 
 	
 if __name__ == "__main__":

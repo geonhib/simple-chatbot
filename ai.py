@@ -147,7 +147,6 @@ def index():
 
 @app.route('/get')
 def get_bot_response():
-	global seat_count
 	message = request.args.get('msg')
 	if message:
 		message = message.lower()

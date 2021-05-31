@@ -9,41 +9,40 @@
 
   </head>
   <body background="{{ url_for('static', filename='images/hug.jpg') }}">
-    <img />
-    <center>
-      <h2> Firefly </h2>
-    </center>
-    <div class="boxed">
-      <div>
-        <div id="chatbox">
+        <img />
+        <center><h2> Firefly </h2> </center>
+        <div class="boxed">
+        <div>
+            <div id="chatbox">
+            </div>
         </div>
-      </div>
-        <div id="userInput">
-          <input id="nameInput" type="text" name="msg" placeholder="Talk to me..." />
-        </div>
-<script>
-        function getBotResponse() {
-          var rawText = $("#nameInput").val();
-          var userHtml = '<p class="userText"><span>' + rawText + "</span></p>";
-          $("#nameInput").val("");
-          $("#chatbox").append(userHtml);
-          document
-            .getElementById("userInput")
-            .scrollIntoView({ block: "start", behavior: "smooth" });
-          $.get("/get", { msg: rawText }).done(function(data) {
-            var botHtml = '<p class="botText"><span>' + data + "</span></p>";
-            $("#chatbox").append(botHtml);
-            document
-              .getElementById("userInput")
-              .scrollIntoView({ block: "start", behavior: "smooth" });
-          });
-        }
-        $("#nameInput").keypress(function(e) {
-          if (e.which == 13) {
-            getBotResponse();
-          }
-        });
-</script>
-</div>
+            <div id="userInput">
+            <input id="nameInput" type="text" name="msg" placeholder="Talk to me..." />
+            </div>
+        <script>
+                function getBotResponse() {
+                var rawText = $("#nameInput").val();
+                var userHtml = '<p class="userText"><span>' + rawText + "</span></p>";
+                $("#nameInput").val("");
+                $("#chatbox").append(userHtml);
+                document
+                    .getElementById("userInput")
+                    .scrollIntoView({ block: "start", behavior: "smooth" });
+                $.get("/get", { msg: rawText }).done(function(data) {
+                    // Replace anchor tag with span
+                    var botHtml = '<p class="botText"> <a href="'+data+'" target="_blank"> ' + data + " </a> </p>";
+                    $("#chatbox").append(botHtml);
+                    document
+                    .getElementById("userInput")
+                    .scrollIntoView({ block: "start", behavior: "smooth" });
+                });
+                }
+                $("#nameInput").keypress(function(e) {
+                if (e.which == 13) {
+                    getBotResponse();
+                }
+                });
+        </script>
+    </div>
 </body>
 </html>
